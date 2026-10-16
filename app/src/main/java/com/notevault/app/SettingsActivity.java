@@ -97,6 +97,7 @@ public class SettingsActivity extends Activity {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 storage.setUseSd(isChecked);
+                storage.migrateLegacyNotesIfNeeded();
                 updateCurrentPathDisplay();
             }
         });
