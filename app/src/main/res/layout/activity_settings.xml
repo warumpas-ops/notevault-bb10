@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootScrollView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:id="@+id/rootView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <!-- Header Bar -->
+        <LinearLayout
+            android:id="@+id/headerBar"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
+
+            <Button
+                android:id="@+id/btnBack"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="[&lt; back]"
+                android:background="@null"
+                android:textSize="13sp"/>
+
+            <TextView
+                android:id="@+id/tvHeaderTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="[settings]"
+                android:textSize="15sp"
+                android:gravity="center"/>
+
+            <Button
+                android:id="@+id/btnSave"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:text="[save]"
+                android:background="@null"
+                android:textSize="13sp"/>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/headerDivider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <!-- Theme section -->
+        <TextView
+            android:id="@+id/tvThemeHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="[APPEARANCE]"
+            android:textSize="12sp"
+            android:paddingLeft="14dp"
+            android:paddingRight="14dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="6dp"/>
+
+        <LinearLayout
+            android:id="@+id/themeRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="14dp"
+            android:paddingRight="14dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tvThemeLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Dark mode"
+                android:textSize="14sp"/>
+
+            <CheckBox
+                android:id="@+id/cbDarkMode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/themeDivider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <!-- Storage section -->
+        <TextView
+            android:id="@+id/tvStorageHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="[STORAGE]"
+            android:textSize="12sp"
+            android:paddingLeft="14dp"
+            android:paddingRight="14dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="6dp"/>
+
+        <LinearLayout
+            android:id="@+id/sdRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingLeft="14dp"
+            android:paddingRight="14dp"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tvSdLabel"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Save to MicroSD card"
+                android:textSize="14sp"/>
+
+            <CheckBox
+                android:id="@+id/cbSdCard"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvCustomPathLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Custom path (optional):"
+            android:textSize="12sp"
+            android:paddingLeft="14dp"
+            android:paddingRight="14dp"
+            android:paddingTop="8dp"/>
+
+        <EditText
+            android:id="@+id/etCustomPath"
+            android:layout_width="match_parent"
+            android:layout_height="38dp"
+            android:hint="/storage/sdcard1"
+            android:textSize="13sp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:layout_marginLeft="14dp"
+            android:layout_marginRight="14dp"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="6dp"
+            android:singleLine="true"
+            android:inputType="textUri"/>
+
+        <TextView
+            android:id="@+id/tvCurrentPath"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="11sp"
+            android:paddingLeft="14dp"
+            android:paddingRight="14dp"
+            android:paddingBottom="10dp"/>
+
+        <View
+            android:id="@+id/storageDivider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp" />
+
+        <!-- Export section -->
+        <TextView
+            android:id="@+id/tvExportHeader"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="[EXPORT]"
+            android:textSize="12sp"
+            android:paddingLeft="14dp"
+            android:paddingRight="14dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="6dp"/>
+
+        <Button
+            android:id="@+id/btnExport"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:text="[export all notes as .txt]"
+            android:textSize="13sp"
+            android:layout_marginLeft="14dp"
+            android:layout_marginRight="14dp"
+            android:layout_marginTop="8dp"/>
+
+        <TextView
+            android:id="@+id/tvExportResult"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="12sp"
+            android:paddingLeft="14dp"
+            android:paddingRight="14dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="16dp"/>
+
+    </LinearLayout>
+</ScrollView>

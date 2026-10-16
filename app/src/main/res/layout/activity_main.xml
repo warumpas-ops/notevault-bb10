@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Top Header Bar -->
+    <LinearLayout
+        android:id="@+id/headerBar"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingLeft="14dp"
+        android:paddingRight="10dp">
+
+        <TextView
+            android:id="@+id/tvAppTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="NoteVault [notes]"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            android:gravity="center_vertical"/>
+
+        <Button
+            android:id="@+id/btnTheme"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:text="[theme]"
+            android:background="@null"
+            android:textSize="12sp"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"/>
+
+        <Button
+            android:id="@+id/btnSettings"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:text="[storage]"
+            android:background="@null"
+            android:textSize="12sp"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp"/>
+    </LinearLayout>
+
+    <!-- Subtle divider line -->
+    <View
+        android:id="@+id/headerDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+
+    <!-- Storage path info -->
+    <TextView
+        android:id="@+id/tvStoragePath"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="11sp"
+        android:paddingLeft="14dp"
+        android:paddingRight="14dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:singleLine="true"
+        android:ellipsize="middle"/>
+
+    <!-- Search bar -->
+    <LinearLayout
+        android:id="@+id/searchContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="12dp"
+        android:paddingRight="12dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp">
+
+        <EditText
+            android:id="@+id/etSearch"
+            android:layout_width="match_parent"
+            android:layout_height="38dp"
+            android:hint="search notes or #tags..."
+            android:textSize="13sp"
+            android:paddingLeft="12dp"
+            android:paddingRight="12dp"
+            android:singleLine="true"
+            android:inputType="text"/>
+    </LinearLayout>
+
+    <!-- Notes list -->
+    <ListView
+        android:id="@+id/listNotes"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:dividerHeight="1dp"/>
+
+    <!-- Empty label -->
+    <TextView
+        android:id="@+id/tvEmpty"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="[ no notes found ]\n\ncreate one below"
+        android:textSize="14sp"
+        android:visibility="gone"/>
+
+    <!-- Bottom divider -->
+    <View
+        android:id="@+id/bottomDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+
+    <!-- Minimalist Bottom Action Bar -->
+    <LinearLayout
+        android:id="@+id/bottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
+        android:paddingTop="6dp"
+        android:paddingBottom="6dp">
+
+        <Button
+            android:id="@+id/btnNewText"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="[+ text]"
+            android:textSize="12sp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"/>
+
+        <Button
+            android:id="@+id/btnNewTask"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="[+ tasks]"
+            android:textSize="12sp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"/>
+
+        <Button
+            android:id="@+id/btnNewAudio"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="[+ audio]"
+            android:textSize="12sp"
+            android:layout_marginLeft="3dp"
+            android:layout_marginRight="3dp"/>
+    </LinearLayout>
+
+</LinearLayout>

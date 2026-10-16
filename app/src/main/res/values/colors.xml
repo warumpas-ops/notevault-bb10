@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bb_blue">#00A8DF</color>
+    <color name="bb_blue_dark">#007EA7</color>
+    <color name="bb_black">#000000</color>
+    <color name="bb_card">#1A1A1A</color>
+    <color name="bb_border">#2C2C2C</color>
+    <color name="bb_text_white">#F5F5F5</color>
+    <color name="bb_text_dim">#888888</color>
+    <color name="bb_red">#D32F2F</color>
+</resources>

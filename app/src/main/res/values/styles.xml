@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="AppTheme" parent="android:Theme.Holo.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@color/bb_black</item>
+        <item name="android:textColorPrimary">@color/bb_text_white</item>
+        <item name="android:textColorSecondary">@color/bb_text_dim</item>
+    </style>
+</resources>

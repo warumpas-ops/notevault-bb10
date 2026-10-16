@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rootView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!-- Header Bar -->
+    <LinearLayout
+        android:id="@+id/headerBar"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
+
+        <Button
+            android:id="@+id/btnBack"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:text="[&lt; back]"
+            android:background="@null"
+            android:textSize="13sp"/>
+
+        <TextView
+            android:id="@+id/tvHeaderTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="[voice memo]"
+            android:textSize="15sp"
+            android:gravity="center"/>
+
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:text="[save]"
+            android:background="@null"
+            android:textSize="13sp"/>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/headerDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+
+    <EditText
+        android:id="@+id/etTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="title"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:padding="12dp"
+        android:background="@null"
+        android:singleLine="true"
+        android:inputType="text"/>
+
+    <View
+        android:id="@+id/titleDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+
+    <EditText
+        android:id="@+id/etCategory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="category (optional)"
+        android:textSize="12sp"
+        android:padding="10dp"
+        android:background="@null"
+        android:singleLine="true"
+        android:inputType="text"/>
+
+    <View
+        android:id="@+id/categoryDivider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp" />
+
+    <!-- Recording area -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:padding="20dp">
+
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="[ tap record to begin ]"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_marginBottom="16dp"/>
+
+        <TextView
+            android:id="@+id/tvTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="00:00"
+            android:textSize="44sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="24dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnRecord"
+                android:layout_width="110dp"
+                android:layout_height="44dp"
+                android:text="[record]"
+                android:textSize="13sp"
+                android:layout_marginRight="6dp"/>
+
+            <Button
+                android:id="@+id/btnStop"
+                android:layout_width="110dp"
+                android:layout_height="44dp"
+                android:text="[stop]"
+                android:textSize="13sp"
+                android:enabled="false"
+                android:layout_marginLeft="6dp"/>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btnPlay"
+            android:layout_width="226dp"
+            android:layout_height="44dp"
+            android:text="[play recording]"
+            android:textSize="13sp"
+            android:layout_marginTop="12dp"
+            android:enabled="false"/>
+    </LinearLayout>
+
+</LinearLayout>
