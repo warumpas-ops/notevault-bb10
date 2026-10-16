@@ -39,7 +39,8 @@ Download sideloadable APKs directly from the [Releases page](https://github.com/
 
 | Version | Title | Status | Download |
 |:---|:---|:---|:---|
-| **[v1.0.0](https://github.com/warumpas-ops/notevault-bb10/releases/tag/v1.0.0)** | **NoteVault v1.0.0 (Final)** — Custom `[ N ]` squircle icon, polished audio recording, full SD card support, theme toggle. | 🟢 Stable | [⬇️ NoteVault.apk](https://github.com/warumpas-ops/notevault-bb10/releases/download/v1.0.0/NoteVault.apk) |
+| **[v1.1.0](https://github.com/warumpas-ops/notevault-bb10/releases/tag/v1.1.0)** | **NoteVault v1.1.0 (Auto Storage)** — Auto-creates `NoteVault` folder on MicroSD & Phone storage root, auto-migrates legacy notes. | 🟢 Latest | [⬇️ NoteVault-v1.1.0.apk](https://github.com/warumpas-ops/notevault-bb10/releases/download/v1.1.0/NoteVault-v1.1.0.apk) |
+| **[v1.0.0](https://github.com/warumpas-ops/notevault-bb10/releases/tag/v1.0.0)** | **NoteVault v1.0.0 (Base Milestone)** — Original base release with custom `[ N ]` squircle icon, Space Grotesk UI, light/dark themes. | 🟢 Milestone | [⬇️ NoteVault.apk](https://github.com/warumpas-ops/notevault-bb10/releases/download/v1.0.0/NoteVault.apk) |
 | **[v0.2.0](https://github.com/warumpas-ops/notevault-bb10/releases/tag/v0.2.0)** | **NoteVault v0.2.0 (UI Overhaul)** — Space Grotesk font, monochrome palette, bracket UI style, and theme toggle. | 🟡 Pre-release | [⬇️ NoteVault-v0.2.0-beta.apk](https://github.com/warumpas-ops/notevault-bb10/releases/download/v0.2.0/NoteVault-v0.2.0-beta.apk) |
 | **[v0.1.0](https://github.com/warumpas-ops/notevault-bb10/releases/tag/v0.1.0)** | **NoteVault v0.1.0 (Prototype)** — The first working test build before the redesign. | 🔴 Deprecated | [⬇️ NoteVault-v0.1.0-prototype.apk](https://github.com/warumpas-ops/notevault-bb10/releases/download/v0.1.0/NoteVault-v0.1.0-prototype.apk) |
 
