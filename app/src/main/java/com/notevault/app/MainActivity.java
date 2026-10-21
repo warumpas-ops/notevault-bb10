@@ -323,7 +323,7 @@ public class MainActivity extends Activity {
                 tvCategory.setVisibility(View.GONE);
             }
 
-            long dateToFormat = note.updatedAt > 0 ? note.updatedAt : note.createdAt;
+            long dateToFormat = note.createdAt > 0 ? note.createdAt : note.updatedAt;
             tvDate.setText(dateFormat.format(new Date(dateToFormat)));
             tvDate.setTextColor(p.textSecondary);
 
