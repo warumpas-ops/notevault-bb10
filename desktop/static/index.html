@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NoteVault PC — Cyberdeck Workspace</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #09090b;
+      --card-bg: #121215;
+      --header-bg: #0d0d10;
+      --border: #27272a;
+      --text: #f4f4f5;
+      --text-muted: #71717a;
+      --accent: #e4e4e7;
+      --btn-bg: #18181b;
+      --btn-border: #3f3f46;
+      --tag-bg: #1f1f23;
+      --highlight: #22c55e;
+    }
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Space Grotesk", monospace;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      user-select: none;
+    }
+
+    /* Top Navigation Bar */
+    header {
+      height: 52px;
+      background: var(--header-bg);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      flex-shrink: 0;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-badge {
+      background: #fff;
+      color: #000;
+      font-weight: 900;
+      font-size: 13px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      letter-spacing: 1px;
+    }
+    .app-title {
+      font-weight: 700;
+      font-size: 16px;
+      letter-spacing: -0.3px;
+    }
+    .sync-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: #18181b;
+      border: 1px solid #3f3f46;
+      padding: 5px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      color: #a1a1aa;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .sync-pill:hover {
+      border-color: #71717a;
+      color: #fff;
+    }
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--highlight);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--highlight);
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    button.btn {
+      background: var(--btn-bg);
+      border: 1px solid var(--btn-border);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: inherit;
+      transition: background 0.15s;
+    }
+    button.btn:hover {
+      background: #27272a;
+    }
+    button.btn-primary {
+      background: #f4f4f5;
+      color: #09090b;
+      border: 1px solid #fff;
+    }
+    button.btn-primary:hover {
+      background: #e4e4e7;
+    }
+
+    /* Main Split Layout */
+    .workspace {
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* Sidebar Note List */
+    .sidebar {
+      width: 340px;
+      background: var(--bg);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+    }
+    .search-box {
+      padding: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .search-input {
+      width: 100%;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 8px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      outline: none;
+      font-family: inherit;
+    }
+    .search-input:focus {
+      border-color: #52525b;
+    }
+    .notes-list {
+      flex: 1;
+      overflow-y: auto;
+    }
+    .note-item {
+      padding: 14px 16px;
+      border-bottom: 1px solid #18181b;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .note-item:hover {
+      background: #121215;
+    }
+    .note-item.active {
+      background: #18181c;
+      border-left: 3px solid #fff;
+    }
+    .note-item-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+    .note-item-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #fafafa;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 220px;
+    }
+    .type-badge {
+      font-size: 10px;
+      color: var(--text-muted);
+      font-family: monospace;
+    }
+    .note-item-preview {
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 6px;
+    }
+    .note-item-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      color: #52525b;
+    }
+    .tag-badge {
+      background: var(--tag-bg);
+      border: 1px solid var(--border);
+      color: #a1a1aa;
+      padding: 1px 6px;
+      border-radius: 3px;
+      font-size: 10px;
+      font-family: monospace;
+    }
+
+    /* Editor Main Canvas */
+    .editor-canvas {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: #000;
+      overflow: hidden;
+    }
+    .editor-header {
+      padding: 14px 24px;
+      border-bottom: 1px solid var(--border);
+      background: var(--header-bg);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .title-input-wrapper {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .title-input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      color: #fff;
+      font-size: 18px;
+      font-weight: 700;
+      outline: none;
+      font-family: inherit;
+    }
+    .cat-input {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: #a1a1aa;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      outline: none;
+      font-family: monospace;
+      width: 140px;
+    }
+    .editor-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .save-indicator {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: monospace;
+    }
+
+    /* Content Area */
+    .content-area {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+    .text-editor {
+      flex: 1;
+      width: 100%;
+      background: #000;
+      border: none;
+      color: #e4e4e7;
+      padding: 24px;
+      font-size: 15px;
+      line-height: 1.6;
+      resize: none;
+      outline: none;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, monospace;
+    }
+
+    /* Tasks / Checklist Canvas */
+    .task-container {
+      flex: 1;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      max-width: 800px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .task-meta-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+    .task-count {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-family: monospace;
+    }
+    .task-list-view {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-bottom: 20px;
+    }
+    .task-row {
+      display: flex;
+      align-items: center;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 10px 14px;
+      gap: 12px;
+      transition: all 0.15s;
+    }
+    .task-row:hover {
+      border-color: #3f3f46;
+    }
+    .task-check {
+      width: 20px;
+      height: 20px;
+      border: 1.5px solid #52525b;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: 700;
+      color: #000;
+      flex-shrink: 0;
+      transition: all 0.15s;
+    }
+    .task-row.done .task-check {
+      background: #e4e4e7;
+      border-color: #e4e4e7;
+    }
+    .task-label {
+      flex: 1;
+      font-size: 14px;
+      color: var(--text);
+      outline: none;
+      user-select: text;
+    }
+    .task-row.done .task-label {
+      text-decoration: line-through;
+      color: var(--text-muted);
+    }
+    .task-del-btn {
+      background: transparent;
+      border: none;
+      color: #52525b;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 2px 6px;
+    }
+    .task-del-btn:hover { color: #f87171; }
+    .add-task-form {
+      display: flex;
+      gap: 10px;
+    }
+    .add-task-input {
+      flex: 1;
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      color: #fff;
+      padding: 10px 14px;
+      border-radius: 6px;
+      font-size: 14px;
+      outline: none;
+      font-family: inherit;
+    }
+    .add-task-input:focus {
+      border-color: #52525b;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.75);
+      backdrop-filter: blur(4px);
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    .modal {
+      background: var(--header-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      width: 480px;
+      padding: 24px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+    }
+    .modal-title {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .modal-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin-bottom: 16px;
+    }
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .empty-state {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      gap: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Header -->
+  <header>
+    <div class="brand">
+      <div class="logo-badge">NV</div>
+      <div class="app-title">NoteVault <span style="font-weight:400; color:#71717a;">[PC]</span></div>
+    </div>
+
+    <!-- Live Sync IP Pill -->
+    <div class="sync-pill" onclick="copySyncUrl()" title="Click to copy Wi-Fi Sync Address">
+      <div class="pulse-dot"></div>
+      <span>Sync Address: <strong id="syncIpDisplay">http://localhost:5050</strong></span>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn" onclick="openUsbSyncModal()">[usb sync]</button>
+      <button class="btn" onclick="createNewNote('TEXT')">[+ note]</button>
+      <button class="btn btn-primary" onclick="createNewNote('TASK')">[+ tasks]</button>
+    </div>
+  </header>
+
+  <!-- Main Workspace -->
+  <div class="workspace">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="search-box">
+        <input type="text" class="search-input" id="searchBar" placeholder="Search notes or #tags..." oninput="renderNotesList()" />
+      </div>
+      <div class="notes-list" id="notesListContainer">
+        <!-- Rendered Note Items -->
+      </div>
+    </div>
+
+    <!-- Editor Area -->
+    <div class="editor-canvas" id="editorCanvas">
+      <div class="empty-state" id="emptyState" style="display: none;">
+        <div>[no note selected]</div>
+        <div style="font-size: 12px;">Select a note on the left or click [+ note] above.</div>
+      </div>
+
+      <div id="activeEditor" style="display: flex; flex-direction: column; flex: 1;">
+        <div class="editor-header">
+          <div class="title-input-wrapper">
+            <input type="text" class="title-input" id="noteTitle" placeholder="Untitled..." oninput="onNoteContentChange()" />
+            <input type="text" class="cat-input" id="noteCategory" placeholder="category / #tag" oninput="onNoteContentChange()" />
+          </div>
+          <div class="editor-actions">
+            <div class="save-indicator" id="saveIndicator">Saved</div>
+            <button class="btn" onclick="deleteCurrentNote()">[delete]</button>
+          </div>
+        </div>
+
+        <div class="content-area" id="contentArea">
+          <!-- Text Note View -->
+          <textarea class="text-editor" id="textBody" placeholder="Start typing your note here..." oninput="onNoteContentChange()" style="display: none;"></textarea>
+
+          <!-- Task / Checklist View -->
+          <div class="task-container" id="taskContainer" style="display: none;">
+            <div class="task-meta-bar">
+              <div class="task-count" id="taskCountLabel">0 / 0 completed</div>
+              <button class="btn" onclick="clearCompletedTasks()" style="font-size: 11px;">[clear done]</button>
+            </div>
+            <div class="task-list-view" id="taskListContainer">
+              <!-- Tasks rendered here -->
+            </div>
+            <div class="add-task-form">
+              <input type="text" class="add-task-input" id="newTaskInput" placeholder="Add a new task and press Enter..." onkeydown="handleTaskKey(event)" />
+              <button class="btn btn-primary" onclick="submitTask()">Add</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- USB / Folder Sync Modal -->
+  <div class="modal-overlay" id="usbModal">
+    <div class="modal">
+      <div class="modal-title">
+        <span>[sync with blackberry usb/folder]</span>
+        <button class="btn" onclick="closeUsbSyncModal()">[x]</button>
+      </div>
+      <div class="modal-desc">
+        Connect your BlackBerry via USB (Mass Storage Mode) or insert your MicroSD card. Enter the path to the <code>NoteVault</code> directory on the device:
+      </div>
+      <input type="text" class="search-input" id="usbFolderPath" placeholder="e.g. E:\NoteVault or D:\NoteVault" style="margin-bottom: 12px;" />
+      <div id="usbSyncStatus" style="font-size: 12px; color: #a1a1aa; margin-bottom: 10px;"></div>
+      <div class="modal-actions">
+        <button class="btn" onclick="closeUsbSyncModal()">[cancel]</button>
+        <button class="btn btn-primary" onclick="executeUsbSync()">[sync now]</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let notes = [];
+    let activeNoteId = null;
+    let saveTimeout = null;
+
+    async function init() {
+      await fetchConfig();
+      await loadNotes();
+    }
+
+    async function fetchConfig() {
+      try {
+        const res = await fetch('/api/config');
+        const data = await res.json();
+        if (data.syncUrl) {
+          document.getElementById('syncIpDisplay').innerText = data.syncUrl;
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    async function loadNotes() {
+      try {
+        const res = await fetch('/api/notes');
+        notes = await res.json();
+        renderNotesList();
+        if (notes.length > 0 && !activeNoteId) {
+          selectNote(notes[0].id);
+        } else if (notes.length === 0) {
+          showEmptyState(true);
+        }
+      } catch (e) {
+        console.error("Failed to load notes", e);
+      }
+    }
+
+    function renderNotesList() {
+      const container = document.getElementById('notesListContainer');
+      const query = document.getElementById('searchBar').value.toLowerCase().trim();
+      container.innerHTML = '';
+
+      const filtered = notes.filter(n => {
+        if (!query) return true;
+        const t = (n.title || '').toLowerCase();
+        const c = (n.content || '').toLowerCase();
+        const cat = (n.category || '').toLowerCase();
+        const taskText = (n.tasks || []).map(x => x.text.toLowerCase()).join(' ');
+        return t.includes(query) || c.includes(query) || cat.includes(query) || taskText.includes(query);
+      });
+
+      if (filtered.length === 0) {
+        container.innerHTML = '<div style="padding: 20px; color: #71717a; text-align: center; font-size: 13px;">[no matching notes]</div>';
+        return;
+      }
+
+      filtered.forEach(note => {
+        const div = document.createElement('div');
+        div.className = `note-item ${note.id === activeNoteId ? 'active' : ''}`;
+        div.onclick = () => selectNote(note.id);
+
+        let preview = '';
+        if (note.type === 'TASK') {
+          const total = (note.tasks || []).length;
+          const done = (note.tasks || []).filter(t => t.done).length;
+          preview = `${done} / ${total} tasks done`;
+        } else {
+          preview = (note.content || '').replace(/\n/g, ' ').substring(0, 50) || 'Empty note';
+        }
+
+        const dateStr = new Date(note.updatedAt || note.createdAt || Date.now()).toLocaleDateString();
+
+        div.innerHTML = `
+          <div class="note-item-header">
+            <div class="note-item-title">${escapeHtml(note.title || 'Untitled')}</div>
+            <div class="type-badge">[${(note.type || 'TEXT').toLowerCase()}]</div>
+          </div>
+          <div class="note-item-preview">${escapeHtml(preview)}</div>
+          <div class="note-item-footer">
+            <span>${dateStr}</span>
+            ${note.category ? `<span class="tag-badge">#${escapeHtml(note.category)}</span>` : ''}
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function selectNote(id) {
+      activeNoteId = id;
+      const note = notes.find(n => n.id === id);
+      if (!note) return;
+
+      showEmptyState(false);
+      renderNotesList();
+
+      document.getElementById('noteTitle').value = note.title || '';
+      document.getElementById('noteCategory').value = note.category || '';
+
+      const textEditor = document.getElementById('textBody');
+      const taskContainer = document.getElementById('taskContainer');
+
+      if (note.type === 'TASK') {
+        textEditor.style.display = 'none';
+        taskContainer.style.display = 'flex';
+        renderTasks(note);
+      } else {
+        taskContainer.style.display = 'none';
+        textEditor.style.display = 'block';
+        textEditor.value = note.content || '';
+      }
+    }
+
+    function renderTasks(note) {
+      const container = document.getElementById('taskListContainer');
+      container.innerHTML = '';
+      const tasks = note.tasks || [];
+      const doneCount = tasks.filter(t => t.done).length;
+
+      document.getElementById('taskCountLabel').innerText = `${doneCount} / ${tasks.length} completed`;
+
+      tasks.forEach((t, index) => {
+        const row = document.createElement('div');
+        row.className = `task-row ${t.done ? 'done' : ''}`;
+        row.innerHTML = `
+          <div class="task-check" onclick="toggleTask(${index})">${t.done ? '✓' : ''}</div>
+          <div class="task-label" contenteditable="true" onblur="editTaskText(${index}, this.innerText)">${escapeHtml(t.text)}</div>
+          <button class="task-del-btn" onclick="deleteTask(${index})" title="Delete task">✕</button>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    function toggleTask(index) {
+      const note = notes.find(n => n.id === activeNoteId);
+      if (!note || !note.tasks) return;
+      note.tasks[index].done = !note.tasks[index].done;
+      renderTasks(note);
+      scheduleAutoSave();
+    }
+
+    function editTaskText(index, newText) {
+      const note = notes.find(n => n.id === activeNoteId);
+      if (!note || !note.tasks) return;
+      note.tasks[index].text = newText.trim();
+      scheduleAutoSave();
+    }
+
+    function deleteTask(index) {
+      const note = notes.find(n => n.id === activeNoteId);
+      if (!note || !note.tasks) return;
+      note.tasks.splice(index, 1);
+      renderTasks(note);
+      scheduleAutoSave();
+    }
+
+    function submitTask() {
+      const input = document.getElementById('newTaskInput');
+      const text = input.value.trim();
+      if (!text) return;
+      const note = notes.find(n => n.id === activeNoteId);
+      if (!note) return;
+      if (!note.tasks) note.tasks = [];
+      note.tasks.push({ text: text, done: false });
+      input.value = '';
+      renderTasks(note);
+      scheduleAutoSave();
+    }
+
+    function handleTaskKey(e) {
+      if (e.key === 'Enter') submitTask();
+    }
+
+    function clearCompletedTasks() {
+      const note = notes.find(n => n.id === activeNoteId);
+      if (!note || !note.tasks) return;
+      note.tasks = note.tasks.filter(t => !t.done);
+      renderTasks(note);
+      scheduleAutoSave();
+    }
+
+    function onNoteContentChange() {
+      const note = notes.find(n => n.id === activeNoteId);
+      if (!note) return;
+      note.title = document.getElementById('noteTitle').value;
+      note.category = document.getElementById('noteCategory').value;
+      if (note.type !== 'TASK') {
+        note.content = document.getElementById('textBody').value;
+      }
+      scheduleAutoSave();
+    }
+
+    function scheduleAutoSave() {
+      document.getElementById('saveIndicator').innerText = 'Saving...';
+      clearTimeout(saveTimeout);
+      saveTimeout = setTimeout(saveCurrentNote, 400);
+    }
+
+    async function saveCurrentNote() {
+      const note = notes.find(n => n.id === activeNoteId);
+      if (!note) return;
+      note.updatedAt = Date.now();
+      try {
+        await fetch('/api/note', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(note)
+        });
+        document.getElementById('saveIndicator').innerText = 'Saved';
+        renderNotesList();
+      } catch (e) {
+        document.getElementById('saveIndicator').innerText = 'Save Error!';
+      }
+    }
+
+    async function createNewNote(type) {
+      const newNote = {
+        id: 'note_' + Date.now(),
+        title: type === 'TASK' ? 'New Checklist' : 'New Note',
+        content: '',
+        type: type,
+        category: '',
+        createdAt: Date.now(),
+        updatedAt: Date.now(),
+        tasks: []
+      };
+      notes.unshift(newNote);
+      await fetch('/api/note', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newNote)
+      });
+      selectNote(newNote.id);
+    }
+
+    async function deleteCurrentNote() {
+      if (!confirm('Are you sure you want to delete this note?')) return;
+      const id = activeNoteId;
+      notes = notes.filter(n => n.id !== id);
+      await fetch(`/api/note/${id}`, { method: 'DELETE' });
+      activeNoteId = null;
+      if (notes.length > 0) {
+        selectNote(notes[0].id);
+      } else {
+        showEmptyState(true);
+      }
+      renderNotesList();
+    }
+
+    function showEmptyState(show) {
+      document.getElementById('emptyState').style.display = show ? 'flex' : 'none';
+      document.getElementById('activeEditor').style.display = show ? 'none' : 'flex';
+    }
+
+    function copySyncUrl() {
+      const url = document.getElementById('syncIpDisplay').innerText;
+      navigator.clipboard.writeText(url);
+      alert(`Copied Wi-Fi Sync Address:\n${url}\n\nEnter this in your BlackBerry NoteVault [sync] screen!`);
+    }
+
+    function openUsbSyncModal() {
+      document.getElementById('usbModal').style.display = 'flex';
+    }
+    function closeUsbSyncModal() {
+      document.getElementById('usbModal').style.display = 'none';
+    }
+
+    async function executeUsbSync() {
+      const path = document.getElementById('usbFolderPath').value.trim();
+      const status = document.getElementById('usbSyncStatus');
+      if (!path) {
+        status.innerText = 'Please specify the NoteVault folder path.';
+        return;
+      }
+      status.innerText = 'Syncing files...';
+      try {
+        const res = await fetch('/api/usb-sync', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ folder: path })
+        });
+        const data = await res.json();
+        if (data.status === 'ok') {
+          status.innerText = `✓ Synced! Pushed ${data.pushed}, Pulled ${data.pulled}`;
+          await loadNotes();
+          setTimeout(closeUsbSyncModal, 1500);
+        } else {
+          status.innerText = '✗ Error: ' + (data.message || 'Sync failed');
+        }
+      } catch (e) {
+        status.innerText = '✗ Error: ' + e.message;
+      }
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    window.onload = init;
+  </script>
+</body>
+</html>
