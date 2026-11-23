@@ -9,7 +9,7 @@
     <LinearLayout
         android:id="@+id/headerBar"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="46dp"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingLeft="10dp"
@@ -23,20 +23,45 @@
             android:background="@null"
             android:textSize="13sp"/>
 
-        <TextView
-            android:id="@+id/tvHeaderTitle"
+        <LinearLayout
+            android:id="@+id/titleHeaderGroup"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="[tasks]"
-            android:textSize="15sp"
-            android:gravity="center"/>
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:paddingLeft="6dp"
+            android:paddingRight="6dp">
+
+            <TextView
+                android:id="@+id/tvHeaderTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Untitled List"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:singleLine="true"
+                android:ellipsize="end"/>
+
+            <TextView
+                android:id="@+id/tvCategoryBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="#tag"
+                android:textSize="10sp"
+                android:layout_marginLeft="6dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:visibility="gone"/>
+        </LinearLayout>
 
         <Button
-            android:id="@+id/btnSave"
+            android:id="@+id/btnEditMeta"
             android:layout_width="wrap_content"
             android:layout_height="32dp"
-            android:text="[save]"
+            android:text="[edit]"
             android:background="@null"
             android:textSize="13sp"/>
     </LinearLayout>
@@ -46,81 +71,105 @@
         android:layout_width="match_parent"
         android:layout_height="1dp" />
 
-    <EditText
-        android:id="@+id/etTitle"
+    <!-- Main Tasks List -->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="title"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:padding="12dp"
-        android:background="@null"
-        android:singleLine="true"
-        android:inputType="text"/>
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
+        <ListView
+            android:id="@+id/listTasks"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:dividerHeight="1dp" />
+
+        <TextView
+            android:id="@+id/tvEmptyTasks"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="[no items yet]\ntap [+ add item] or press 'A'"
+            android:textSize="13sp"
+            android:visibility="gone" />
+    </FrameLayout>
+
+    <!-- Bottom Divider -->
     <View
-        android:id="@+id/titleDivider"
+        android:id="@+id/bottomDivider"
         android:layout_width="match_parent"
         android:layout_height="1dp" />
 
-    <EditText
-        android:id="@+id/etCategory"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="category (optional)"
-        android:textSize="12sp"
-        android:padding="10dp"
-        android:background="@null"
-        android:singleLine="true"
-        android:inputType="text"/>
-
-    <View
-        android:id="@+id/categoryDivider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp" />
-
-    <!-- Add task row -->
+    <!-- Inline Add Input Row (Revealed when adding) -->
     <LinearLayout
-        android:id="@+id/addTaskRow"
+        android:id="@+id/inlineAddRow"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="10dp"
-        android:gravity="center_vertical">
+        android:padding="8dp"
+        android:gravity="center_vertical"
+        android:visibility="gone">
 
         <EditText
             android:id="@+id/etNewTask"
             android:layout_width="0dp"
             android:layout_height="38dp"
             android:layout_weight="1"
-            android:hint="add item..."
+            android:hint="type task..."
             android:textSize="13sp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             android:singleLine="true"
-            android:inputType="text"/>
+            android:inputType="textCapSentences"
+            android:imeOptions="actionDone"/>
 
         <Button
-            android:id="@+id/btnAddTask"
+            android:id="@+id/btnSubmitTask"
             android:layout_width="wrap_content"
-            android:layout_height="38dp"
-            android:text="[+ add]"
+            android:layout_height="36dp"
+            android:text="[add]"
             android:textSize="12sp"
-            android:layout_marginLeft="8dp"
-            android:paddingLeft="12dp"
-            android:paddingRight="12dp"/>
+            android:layout_marginLeft="6dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"/>
+
+        <Button
+            android:id="@+id/btnCloseAddRow"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:text="[x]"
+            android:background="@null"
+            android:textSize="12sp"
+            android:layout_marginLeft="2dp"
+            android:paddingLeft="8dp"
+            android:paddingRight="8dp"/>
     </LinearLayout>
 
-    <View
-        android:id="@+id/taskDivider"
+    <!-- Sleek Bottom Status & Add Action Bar -->
+    <LinearLayout
+        android:id="@+id/bottomBar"
         android:layout_width="match_parent"
-        android:layout_height="1dp" />
+        android:layout_height="42dp"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
 
-    <ListView
-        android:id="@+id/listTasks"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:dividerHeight="1dp"/>
+        <Button
+            android:id="@+id/btnOpenAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:text="[+ add item]"
+            android:textSize="12sp"
+            android:background="@null"/>
+
+        <TextView
+            android:id="@+id/tvTaskStats"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="0 / 0 done"
+            android:textSize="12sp"/>
+    </LinearLayout>
 
 </LinearLayout>

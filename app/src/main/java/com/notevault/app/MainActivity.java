@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,7 @@ public class MainActivity extends Activity {
     private View rootView;
     private LinearLayout headerBar;
     private TextView tvAppTitle;
+    private Button btnSync;
     private Button btnTheme;
     private Button btnSettings;
     private View headerDivider;
@@ -60,6 +62,7 @@ public class MainActivity extends Activity {
         rootView = findViewById(R.id.rootView);
         headerBar = (LinearLayout) findViewById(R.id.headerBar);
         tvAppTitle = (TextView) findViewById(R.id.tvAppTitle);
+        btnSync = (Button) findViewById(R.id.btnSync);
         btnTheme = (Button) findViewById(R.id.btnTheme);
         btnSettings = (Button) findViewById(R.id.btnSettings);
         headerDivider = findViewById(R.id.headerDivider);
@@ -76,6 +79,13 @@ public class MainActivity extends Activity {
 
         adapter = new NotesAdapter();
         listNotes.setAdapter(adapter);
+
+        btnSync.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showSyncDialog();
+            }
+        });
 
         btnTheme.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -179,6 +189,7 @@ public class MainActivity extends Activity {
         headerBar.setBackgroundColor(p.headerBg);
         tvAppTitle.setTextColor(p.textPrimary);
 
+        btnSync.setTextColor(p.textSecondary);
         btnTheme.setTextColor(p.textSecondary);
         btnTheme.setText(storage.isDarkTheme() ? "[light]" : "[dark]");
 
@@ -331,5 +342,100 @@ public class MainActivity extends Activity {
 
             return convertView;
         }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (etSearch != null && etSearch.hasFocus()) {
+            return super.onKeyDown(keyCode, event);
+        }
+        if (keyCode == KeyEvent.KEYCODE_S) {
+            showSyncDialog();
+            return true;
+        }
+        if (keyCode == KeyEvent.KEYCODE_N || keyCode == KeyEvent.KEYCODE_T) {
+            startActivity(new Intent(MainActivity.this, NoteEditorActivity.class));
+            return true;
+        }
+        if (keyCode == KeyEvent.KEYCODE_K) {
+            startActivity(new Intent(MainActivity.this, TaskEditorActivity.class));
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
+    private void showSyncDialog() {
+        final SyncManager syncManager = new SyncManager(this, repo);
+        final ThemeManager.Palette p = ThemeManager.get(storage);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("[wi-fi sync with pc]");
+
+        LinearLayout layout = new LinearLayout(this);
+        layout.setOrientation(LinearLayout.VERTICAL);
+        layout.setPadding(24, 16, 24, 8);
+
+        TextView info = new TextView(this);
+        info.setText("Open NoteVault on your laptop,\nthen enter PC IP:Port below:");
+        info.setTextColor(p.textSecondary);
+        info.setTextSize(12);
+        info.setPadding(0, 0, 0, 10);
+        layout.addView(info);
+
+        final EditText etIp = new EditText(this);
+        etIp.setText(syncManager.getLastServerIp());
+        etIp.setHint("192.168.1.xxx:5050");
+        etIp.setTextColor(p.textPrimary);
+        etIp.setHintTextColor(p.textSecondary);
+        etIp.setSingleLine(true);
+        layout.addView(etIp);
+
+        final TextView status = new TextView(this);
+        status.setText("Status: ready");
+        status.setTextColor(p.textSecondary);
+        status.setTextSize(12);
+        status.setPadding(0, 10, 0, 0);
+        layout.addView(status);
+
+        builder.setView(layout);
+
+        builder.setPositiveButton("[sync now]", null);
+        builder.setNegativeButton("[close]", null);
+
+        final AlertDialog dialog = builder.create();
+        dialog.show();
+
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(final View v) {
+                final String address = etIp.getText().toString().trim();
+                if (address.isEmpty()) {
+                    status.setText("Please enter an IP:Port");
+                    return;
+                }
+                v.setEnabled(false);
+                status.setText("Connecting...");
+
+                syncManager.syncAsync(address, new SyncManager.SyncListener() {
+                    @Override
+                    public void onProgress(String message) {
+                        status.setText(message);
+                    }
+
+                    @Override
+                    public void onSuccess(int pushed, int pulled) {
+                        status.setText("✓ Sync complete!\nSent " + pushed + ", Received " + pulled);
+                        v.setEnabled(true);
+                        loadNotes();
+                    }
+
+                    @Override
+                    public void onError(String error) {
+                        status.setText("✗ " + error);
+                        v.setEnabled(true);
+                    }
+                });
+            }
+        });
     }
 }

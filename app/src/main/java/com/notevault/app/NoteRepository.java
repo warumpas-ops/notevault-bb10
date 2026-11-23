@@ -19,8 +19,7 @@ public class NoteRepository {
         this.storage = storage;
     }
 
-    public void save(Note note) throws Exception {
-        note.updatedAt = System.currentTimeMillis();
+    public JSONObject toJson(Note note) throws Exception {
         JSONObject obj = new JSONObject();
         obj.put("id", note.id);
         obj.put("title", note.title == null ? "" : note.title);
@@ -40,7 +39,46 @@ public class NoteRepository {
             }
         }
         obj.put("tasks", tasks);
+        return obj;
+    }
 
+    public Note fromJson(JSONObject obj) {
+        Note note = new Note();
+        note.id = obj.optString("id", "note_" + System.currentTimeMillis());
+        note.title = obj.optString("title", "");
+        note.content = obj.optString("content", "");
+        try {
+            note.type = NoteType.valueOf(obj.optString("type", "TEXT"));
+        } catch (Exception e) {
+            note.type = NoteType.TEXT;
+        }
+        note.createdAt = obj.optLong("createdAt", System.currentTimeMillis());
+        note.updatedAt = obj.optLong("updatedAt", System.currentTimeMillis());
+        note.audioFileName = obj.optString("audioFileName", "");
+        note.category = obj.optString("category", "");
+        JSONArray tasks = obj.optJSONArray("tasks");
+        if (tasks != null) {
+            for (int i = 0; i < tasks.length(); i++) {
+                try {
+                    JSONObject to = tasks.getJSONObject(i);
+                    note.tasks.add(new TaskItem(to.optString("text", ""), to.optBoolean("done", false)));
+                } catch (Exception ignored) {}
+            }
+        }
+        return note;
+    }
+
+    public void save(Note note) throws Exception {
+        note.updatedAt = System.currentTimeMillis();
+        JSONObject obj = toJson(note);
+        File f = storage.noteFile(note.id);
+        FileWriter fw = new FileWriter(f);
+        fw.write(obj.toString());
+        fw.close();
+    }
+
+    public void saveRaw(Note note) throws Exception {
+        JSONObject obj = toJson(note);
         File f = storage.noteFile(note.id);
         FileWriter fw = new FileWriter(f);
         fw.write(obj.toString());
@@ -54,23 +92,7 @@ public class NoteRepository {
         while ((line = br.readLine()) != null) sb.append(line);
         br.close();
         JSONObject obj = new JSONObject(sb.toString());
-        Note note = new Note();
-        note.id = obj.optString("id", "");
-        note.title = obj.optString("title", "");
-        note.content = obj.optString("content", "");
-        note.type = NoteType.valueOf(obj.optString("type", "TEXT"));
-        note.createdAt = obj.optLong("createdAt", 0);
-        note.updatedAt = obj.optLong("updatedAt", 0);
-        note.audioFileName = obj.optString("audioFileName", "");
-        note.category = obj.optString("category", "");
-        JSONArray tasks = obj.optJSONArray("tasks");
-        if (tasks != null) {
-            for (int i = 0; i < tasks.length(); i++) {
-                JSONObject to = tasks.getJSONObject(i);
-                note.tasks.add(new TaskItem(to.optString("text", ""), to.optBoolean("done", false)));
-            }
-        }
-        return note;
+        return fromJson(obj);
     }
 
     public List<Note> loadAll() {
@@ -100,35 +122,32 @@ public class NoteRepository {
         File f = storage.noteFile(note.id);
         if (f.exists()) f.delete();
         if (note.audioFileName != null && !note.audioFileName.isEmpty()) {
-            File audio = new File(storage.notesDir(), note.audioFileName);
-            if (audio.exists()) audio.delete();
+            File af = new File(storage.notesDir(), note.audioFileName);
+            if (af.exists()) af.delete();
         }
     }
 
     public void exportAll(File exportFile) throws Exception {
         List<Note> notes = loadAll();
-        StringBuilder sb = new StringBuilder();
-        sb.append("NoteVault Export\n");
-        sb.append("================\n\n");
-        for (Note n : notes) {
-            sb.append("Title: ").append(n.displayTitle()).append("\n");
-            sb.append("Type: ").append(n.typeLabel()).append("\n");
-            if (n.category != null && !n.category.isEmpty())
-                sb.append("Category: ").append(n.category).append("\n");
-            sb.append("---\n");
-            if (n.type == NoteType.TEXT) {
-                sb.append(n.content).append("\n");
-            } else if (n.type == NoteType.TASK) {
-                for (TaskItem t : n.tasks) {
-                    sb.append(t.done ? "[x] " : "[ ] ").append(t.text).append("\n");
-                }
-            } else if (n.type == NoteType.AUDIO) {
-                sb.append("[Voice memo: ").append(n.audioFileName).append("]\n");
-            }
-            sb.append("\n");
-        }
         FileWriter fw = new FileWriter(exportFile);
-        fw.write(sb.toString());
+        for (Note n : notes) {
+            fw.write("========================================\n");
+            fw.write("Title: " + n.displayTitle() + "\n");
+            fw.write("Type: " + n.typeLabel() + "\n");
+            if (n.category != null && !n.category.isEmpty()) {
+                fw.write("Category: #" + n.category + "\n");
+            }
+            fw.write("Created: " + new java.util.Date(n.createdAt).toString() + "\n");
+            fw.write("----------------------------------------\n");
+            if (n.type == NoteType.TASK && n.tasks != null) {
+                for (TaskItem t : n.tasks) {
+                    fw.write((t.done ? "[X] " : "[ ] ") + t.text + "\n");
+                }
+            } else if (n.content != null) {
+                fw.write(n.content + "\n");
+            }
+            fw.write("\n\n");
+        }
         fw.close();
     }
 }
